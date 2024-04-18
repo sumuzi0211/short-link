@@ -18,9 +18,7 @@
 package com.nageoffer.shortlink.project.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nageoffer.shortlink.project.dao.entity.ShortLinkDO;
 import com.nageoffer.shortlink.project.dao.mapper.ShortLinkMapper;
@@ -87,16 +85,15 @@ public class RecycleBinServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLin
 
     @Override
     public void removeRecycleBin(RecycleBinRemoveReqDTO requestParam) {
-        LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
+        ShortLinkDO shortLinkDO = new ShortLinkDO();
+        shortLinkDO.setDelTime(System.currentTimeMillis());
+        shortLinkDO.setDelFlag(1);
+        lambdaUpdate()
                 .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
                 .eq(ShortLinkDO::getGid, requestParam.getGid())
                 .eq(ShortLinkDO::getEnableStatus, 1)
                 .eq(ShortLinkDO::getDelTime, 0L)
-                .eq(ShortLinkDO::getDelFlag, 0);
-        ShortLinkDO delShortLinkDO = ShortLinkDO.builder()
-                .delTime(System.currentTimeMillis())
-                .build();
-        delShortLinkDO.setDelFlag(1);
-        baseMapper.update(delShortLinkDO, updateWrapper);
+                .eq(ShortLinkDO::getDelFlag, 0)
+                .update(shortLinkDO);
     }
 }
