@@ -42,7 +42,6 @@ import java.util.List;
 @Service(value = "recycleBinServiceImplByAdmin")
 @RequiredArgsConstructor
 public class RecycleBinServiceImpl implements RecycleBinService {
-
     private final ShortLinkActualRemoteService shortLinkActualRemoteService;
     private final GroupMapper groupMapper;
 
