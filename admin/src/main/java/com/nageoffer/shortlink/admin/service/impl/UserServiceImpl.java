@@ -122,18 +122,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     @Override
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
-//        LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
-//                .eq(UserDO::getUsername, requestParam.getUsername())
-//                .eq(UserDO::getPassword, requestParam.getPassword())
-//                .eq(UserDO::getDelFlag, 0);
-//        UserDO userDO = baseMapper.selectOne(queryWrapper);
         UserDO userDO = lambdaQuery()
                 .eq(UserDO::getUsername, requestParam.getUsername())
-                .eq(UserDO::getPassword, requestParam.getPassword())
                 .eq(UserDO::getDelFlag, 0)
                 .one();
         if (userDO == null) {
             throw new ClientException("用户不存在");
+        }
+        if (!userDO.getPassword().equals(requestParam.getPassword())) {
+            throw new ClientException("密码错误");
         }
         Map<Object, Object> hasLoginMap = stringRedisTemplate.opsForHash().entries(USER_LOGIN_KEY + requestParam.getUsername());
         if (CollUtil.isNotEmpty(hasLoginMap)) {
