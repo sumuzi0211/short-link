@@ -40,12 +40,12 @@ public interface UserService extends IService<UserDO> {
     UserRespDTO getUserByUsername(String username);
 
     /**
-     * 查询用户名是否存在
+     * 查询用户名是否可用
      *
      * @param username 用户名
-     * @return 用户名存在返回 True，不存在返回 False
+     * @return 用户名可用返回 True，不可用返回 False
      */
-    Boolean hasUsername(String username);
+    Boolean avlUsername(String username);
 
     /**
      * 注册用户

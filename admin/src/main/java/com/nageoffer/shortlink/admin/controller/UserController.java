@@ -64,11 +64,11 @@ public class UserController {
     }
 
     /**
-     * 查询用户名是否存在
+     * 查询用户名是否可用
      */
     @GetMapping("/api/short-link/admin/v1/user/has-username")
-    public Result<Boolean> hasUsername(@RequestParam("username") String username) {
-        return Results.success(userService.hasUsername(username));
+    public Result<Boolean> avlUsername(@RequestParam("username") String username) {
+        return Results.success(userService.avlUsername(username));
     }
 
     /**
