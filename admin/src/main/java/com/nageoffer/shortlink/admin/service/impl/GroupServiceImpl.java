@@ -49,7 +49,6 @@ import static com.nageoffer.shortlink.admin.common.constant.RedisCacheConstant.L
 
 /**
  * 短链接分组接口实现层
- * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：link）获取项目资料
  */
 @Slf4j
 @Service
@@ -81,7 +80,6 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
             }
             String gid;
             do {
-//                gid = RandomGenerator.generateRandom();
                 gid = RandomUtil.randomString(6);
             } while (!hasGid(username, gid));
             GroupDO groupDO = GroupDO.builder()
@@ -117,13 +115,6 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     @Override
     public void updateGroup(ShortLinkGroupUpdateReqDTO requestParam) {
-//        LambdaUpdateWrapper<GroupDO> updateWrapper = Wrappers.lambdaUpdate(GroupDO.class)
-//                .eq(GroupDO::getUsername, UserContext.getUsername())
-//                .eq(GroupDO::getGid, requestParam.getGid())
-//                .eq(GroupDO::getDelFlag, 0);
-//        GroupDO groupDO = new GroupDO();
-//        groupDO.setName(requestParam.getName());
-//        baseMapper.update(groupDO, updateWrapper);
         lambdaUpdate()
                 .set(GroupDO::getName, requestParam.getName())
                 .eq(GroupDO::getUsername, UserContext.getUsername())
@@ -134,13 +125,6 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     @Override
     public void deleteGroup(String gid) {
-//        LambdaUpdateWrapper<GroupDO> updateWrapper = Wrappers.lambdaUpdate(GroupDO.class)
-//                .eq(GroupDO::getUsername, UserContext.getUsername())
-//                .eq(GroupDO::getGid, gid)
-//                .eq(GroupDO::getDelFlag, 0);
-//        GroupDO groupDO = new GroupDO();
-//        groupDO.setDelFlag(1);
-//        baseMapper.update(groupDO, updateWrapper);
         lambdaUpdate()
                 .set(GroupDO::getDelFlag, 1)
                 .eq(GroupDO::getUsername, UserContext.getUsername())
@@ -151,16 +135,6 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
 
     @Override
     public void sortGroup(List<ShortLinkGroupSortReqDTO> requestParam) {
-//        requestParam.forEach(each -> {
-//            GroupDO groupDO = GroupDO.builder()
-//                    .sortOrder(each.getSortOrder())
-//                    .build();
-//            LambdaUpdateWrapper<GroupDO> updateWrapper = Wrappers.lambdaUpdate(GroupDO.class)
-//                    .eq(GroupDO::getUsername, UserContext.getUsername())
-//                    .eq(GroupDO::getGid, each.getGid())
-//                    .eq(GroupDO::getDelFlag, 0);
-//            baseMapper.update(groupDO, updateWrapper);
-//        });
         requestParam.forEach(each -> {
             lambdaUpdate()
                     .set(GroupDO::getSortOrder, each.getSortOrder())
