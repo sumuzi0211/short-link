@@ -53,7 +53,6 @@ import static com.nageoffer.shortlink.admin.common.enums.UserErrorCodeEnum.*;
 
 /**
  * 用户接口实现层
- * 公众号：马丁玩编程，回复：加群，添加马哥微信（备注：link）获取项目资料
  */
 @Service
 @RequiredArgsConstructor
@@ -66,27 +65,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
 
     @Override
     public UserRespDTO getUserByUsername(String username) {
-//        LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
-//                .eq(UserDO::getUsername, username);
-//        UserDO userDO = baseMapper.selectOne(queryWrapper);
         UserDO userDO = lambdaQuery().eq(UserDO::getUsername, username).one();
         if (userDO == null) {
             throw new ServiceException(UserErrorCodeEnum.USER_NULL);
         }
-//        UserRespDTO result = new UserRespDTO();
-//        BeanUtils.copyProperties(userDO, result);
         UserRespDTO result = BeanUtil.copyProperties(userDO, UserRespDTO.class);
         return result;
     }
 
     @Override
-    public Boolean hasUsername(String username) {
+    public Boolean avlUsername(String username) {
         return !userRegisterCachePenetrationBloomFilter.contains(username);
     }
 
     @Override
     public void register(UserRegisterReqDTO requestParam) {
-        if (!hasUsername(requestParam.getUsername())) {
+        if (!avlUsername(requestParam.getUsername())) {
             throw new ClientException(USER_NAME_EXIST);
         }
         RLock lock = redissonClient.getLock(LOCK_USER_REGISTER_KEY + requestParam.getUsername());
@@ -112,9 +106,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         if (!Objects.equals(requestParam.getUsername(), UserContext.getUsername())) {
             throw new ClientException("当前登录用户修改请求异常");
         }
-//        LambdaUpdateWrapper<UserDO> updateWrapper = Wrappers.lambdaUpdate(UserDO.class)
-//                .eq(UserDO::getUsername, requestParam.getUsername());
-//        baseMapper.update(BeanUtil.toBean(requestParam, UserDO.class), updateWrapper);
         lambdaUpdate()
                 .eq(UserDO::getUsername, requestParam.getUsername())
                 .update(BeanUtil.copyProperties(requestParam, UserDO.class));
